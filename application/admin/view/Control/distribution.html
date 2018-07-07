@@ -1,0 +1,50 @@
+<style>
+    .update{
+        margin-top: 0;
+    }
+    .box{
+        width: 80%;
+    }
+    .control{
+        font-size: 16px;
+        color: #666;
+    }
+</style>
+<nav class="breadcrumb update">
+    <i class="Hui-iconfont"></i>
+    <a href="{:url('usermanage')}" class="maincolor">用户管理</a> > 分配部门
+</nav>
+<article class="cl pd-10 box">
+    <form action="{:url('distribution')}" method="post" class="form form-horizontal" id="form-admin-add">
+        <input type="text" name="id" value="{$id}" style="display: none">
+        {foreach $group as  $row}
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input type="checkbox" name="group[]" value="{$row['id']}" >
+                    <span class="control">{$row['title']}</span>
+                </div>
+            </div>
+        {/foreach}
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="button" id="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var group = '{$user}';
+        group = group.split(",");
+        for(var i=0;i<group.length;i++){
+            var input = $("input[value="+group[i]+"]");
+            input.attr('checked',true);
+        }
+        $('#submit').on('click',function () {
+            MyBase.ajaxSubmit($('#form-admin-add'));
+        });
+    });
+</script>

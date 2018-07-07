@@ -1,0 +1,100 @@
+<nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="{:url($current)}" class="maincolor">部门管理</a>
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="Hui-article">
+    <!--内容区域-->
+    <article class="cl pd-20">
+        <div class="cl pd-5 bg-1 bk-gray mt-10">
+			<span class="l">
+				<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+				<a href="{:url('updategroup')}" onclick="" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加部门</a>
+			</span>
+            <span class="r">共有数据：<strong>{:count($info)}</strong> 条</span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort">
+                <thead>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="80">部门名称</th>
+                    <th width="70">状态</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $info as $row}
+                <tr class="text-c">
+                    <td><input type="checkbox" class="checkbox-id" data-id="{$row['id']}"></td>
+                    <td>{$row['title']}</td>
+                    <td class="td-status">
+                        {if condition="$row['status'] eq '1'"}
+                        <span class="label label-success radius">正常</span>
+                        {else /}
+                        <span class="label radius">禁用</span>
+                        {/if}
+                    </td>
+                    <td class="td-manage">
+                        <a style="text-decoration:none"  href="{:url('control/authority',['id'=>$row['id']])}" title="管理权限">管理权限</a>
+                        <a title="编辑" href="{:url('control/updategroup',['id'=>$row['id']])}"  class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        <a title="删除" href="javascript:;" onclick="action_del(this,'{$row[\'id\']}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+</section>
+
+<script type="text/javascript">
+    $(function(){
+        $('.table-sort').dataTable({
+            "bStateSave": true,
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {"orderable":false,"aTargets":[0,3]}// 制定列不参与排序
+            ]
+        });
+    });
+
+    /**删除功能
+     *
+     */
+    function action_del(obj,id){
+        layer.confirm('确认要删除吗？',function(){
+            var url = "{:url('Control/deleteGroup')}";
+            MyBase.noTipsAjax(url,{id:id},function (result) {
+                if (result.status == '1'){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                }
+            },function () {
+                layer.msg('删除失败!',{time:2000});
+            });
+        });
+    }
+
+    function datadel(){
+        var check = $('.checkbox-id:checked');
+        if(check.length > 0){
+            layer.confirm('确认删除选中数据？',function(){
+                var url = "{:url('Control/deleteGroupMult')}";
+                var id = [];
+                for(var i=0;i<check.length;i++){
+                    id.push(check.eq(i).data('id'));
+                }
+                MyBase.noTipsAjax(url,{id:id},function (result) {
+                    if (result.status == '1'){
+                        for (var i=0;i<check.length;i++){
+                            check.eq(i).parents("tr").remove();
+                        }
+                        layer.msg('已删除!',{icon:1,time:1000});
+                    }
+                },function () {
+                    layer.msg('删除失败!',{time:2000});
+                });
+            });
+        }
+    }
+
+</script>

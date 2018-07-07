@@ -1,0 +1,244 @@
+{__NOLAYOUT__}
+{include file="public/head"}
+<div class='firstly'>
+        <table class="table table-goods" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <th width="120">
+                        <span>
+                            <input type="checkbox" class="input_check" id="checkAll" checked><label for="checkAll">全选</label>
+                        </span>
+                    </th>
+                    <th class="first">商品</th>
+                    <th width="120">单价</th>
+                    <th width="240">数量</th>
+                    <th width="140" class="last">操作</th>
+                </tr>
+                {foreach $cart as $row}
+                <tr class="j-row">
+                    <td>
+                        <span>
+                            <input type="checkbox" class="input-row" checked/>
+                        </span>
+                    </td>
+                    <td class="vtop">
+                        <div class="title-area" title="{$row['summary']}">
+                            <div class="img-wrap">
+                                <a href="" target="_blank"><img src="{$row['main_img_url']}" class="img-view"></a>
+                            </div>
+                            <div class="title-wrap">
+                                <div class="title">
+                                    <a href="" class="link"><span class="name">{$row['name']}</span></a>
+                                </div>
+                                <div class="attrs"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>￥<span class="font14">{$row['price']}</span></td>
+                    <td class="j-cell">
+                        <div class="buycount-ctrl">
+                            <a class="j-ctrl ctrl minus
+                            {if condition="($row['count'] < 2)"}
+                                disabled
+                            {/if}
+                            ">-</a>
+                            <input type="number" value="{$row['count']}" maxlength="10"  min="1" class="priceText" data-uid="{$uid}" data-price="{$row['price']}" data-id="{$row['id']}">
+                            <a class="ctrl j-ctrl plus">+</a>
+                        </div>
+                        <span class="err-wrap j-err-wrap"></span>
+                    </td>
+                    <td class="font14"><span class="j-dele">X</span></td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+        <div class="final-price-area">应付总额：<span class="sum">￥<span class="price">0</span></span></div>
+
+        <div class="page-button-wrap">
+            <a href="javascript:void(0)" id="submitOrder" class="btn btn-primary">生成订单</a>
+        </div>
+        <div style="width: 100%;min-width: 1200px;height: 5px;background: #dbdbdb;margin: 50px 0 20px;"></div>
+</div>
+<div class="container hidden">
+    <div class="content">
+        <img src="__STATIC__/index/image/404.jpg">
+        <div class="tip-404">哦豁,未发现你的美食！快去添加吧。</div>
+        <button class="findButton">发现美食</button>
+    </div>
+</div>
+    <script>
+        $(function () {
+            if(localStorage.getItem('myCart')>2){
+                savelocalStorageCart();
+                location.reload();
+            }
+            reCalculation();
+
+            {empty name="cart"}
+            $('.firstly').addClass('hidden');
+            $('.container').removeClass('hidden');
+            {/empty}
+        });
+
+        window.onbeforeunload = function () {
+            savelocalStorageCart(1);
+        };
+
+        $('#checkAll').change(function (all) {
+            var checkbox = $('.input-row');
+            var flag = $(all.target).is(":checked");
+            checkbox.each(function (e) {
+               checkbox[e].checked = flag;
+            });
+            reCalculation();
+        });
+
+        $('.input-row').change(function () {
+                reCalculation();
+        });
+        
+        $('.j-dele').on('click',function (e) {
+            confirm('删除就不能恢复了，确定删除吗?','提示',
+                function () {
+                    $(e.target).parents('.j-row').remove();
+                    reCalculation();
+
+                    var cart = localStorage.getItem('myCart');
+                    console.log(cart);
+                    var url = "/index/cart/savecart.html";
+                        $.ajax({
+                            url: url,
+                            cache: false,
+                            type: 'POST',
+                            data: {cart:cart},
+                            dataType: 'json',
+                            success: function (res) {
+                                //删除本地的购物车信息
+                                if (res.status == 'ok'){
+                                    localStorage.removeItem('myCart');
+                                    console.log('成功更新购物车');
+                                    location.reload();
+                                }
+                            },
+                            error: function () {
+                                console.log('购物车更新失败!');
+                            }
+                        });
+
+                },
+                function () {
+                })
+        });
+
+        //重新计算金额
+        function reCalculation() {
+            var checkbox = $('.input-row');
+            var input = $('.priceText');
+            var sum = 0;
+            var cart = new Array();
+            for(var i=0;i<checkbox.length;i++){
+                if(checkbox.eq(i).is(":checked")){
+                    sum += parseFloat(input.eq(i).val()) * parseFloat(input.eq(i).data('price'));
+                }
+            }
+            for(var i=0;i<checkbox.length;i++){
+                    var row = new Array();
+                    row['count'] = parseFloat(input.eq(i).val());
+                    row['id'] = parseFloat(input.eq(i).data('id'));
+                    row['uid'] = parseFloat(input.eq(i).data('uid'));
+                    cart.push(row);
+            }
+            saveStorageCart(cart);
+            $('.price').text(sum.toFixed(2));
+        }
+
+        /**更新本地购物车信息
+         *
+         */
+        function saveStorageCart(cart) {
+            var cartArr = new Array();
+            for(var i=0;i<cart.length;i++){
+                var row = new Array();
+                row.push(cart[i]['uid']);
+                row.push(cart[i]['id']);
+                row.push(cart[i]['count']);
+                cartArr.push(row);
+            }
+            localStorage.setItem('myCart', JSON.stringify(cartArr));
+        }
+
+        /**用户手动收入
+         *
+         */
+        $(".buycount-ctrl input").keyup(function(e){
+            var input = $(e.target);
+            var num = input.val();
+            if(num >1){
+                input.prev().removeClass('disabled');
+            }else{
+                input.val(1);
+                input.prev().addClass('disabled');
+            }
+            reCalculation()
+        });
+
+        /**减号
+         *
+         */
+        $(".minus").on('click',function(e){
+            var input = $(e.target).next();
+            var num = input.val();
+            if(num > 1){
+                $(e.target).removeClass('disabled');
+                num--;
+                if(num == 1)
+                    $(e.target).addClass('disabled');
+                input.val(num);
+            }
+            else {
+                $(e.target).addClass('disabled');
+            }
+            reCalculation()
+        });
+
+
+        /**加号
+         *
+         */
+        $(".plus").on('click',function(e){
+            var input = $(e.target).prev();
+            var num = input.val();
+            num++;
+            if(num > 1){
+                $(e.target).prev().prev().removeClass('disabled');
+            }
+            input.val(num);
+            reCalculation()
+        });
+
+        /**生成订单
+         *
+         */
+        $('#submitOrder').on('click',function () {
+            var checkbox = $('.input-row');
+            var input = $('.priceText');
+            var cart = new Array();
+            for(var i=0;i<checkbox.length;i++){
+                if(checkbox.eq(i).is(":checked")){
+                    var row = new Array();
+                    row.push(parseFloat(input.eq(i).val()));
+                    row.push(parseFloat(input.eq(i).data('id')));
+                    row.push(parseFloat(input.eq(i).data('uid')));
+                    cart.push(row);
+                }
+            }
+            MyBase.commonAjax("{:url('Order/saveOrder')}",{json:JSON.stringify(cart)},'POST');
+        })
+
+        $('.findButton').on('click',function () {
+                window.location.href = "{:url('index/index')}";
+        });
+
+    </script>
+</body>
+</html>

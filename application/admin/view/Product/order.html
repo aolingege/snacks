@@ -1,0 +1,110 @@
+<style>
+    .licensepic{
+        width: 130px;
+        height: 95px;
+    }
+    .map-info{
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+    .map-content{
+        color: #666;
+    }
+</style>
+<nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="{:url($current)}" class="maincolor">管理订单</a>
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="Hui-article">
+    <!--内容区域-->
+    <article class="cl pd-20">
+        <div class="cl pd-5 bg-1 bk-gray mt-10">
+            <span class="r">共有订单：<strong>{:count($info)}</strong> 份</span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort">
+                <thead>
+                <tr class="text-c">
+                    <th width="80">订单编号</th>
+                    <th width="80">名称</th>
+                    <th width="80">用户ID</th>
+                    <th width="70">创建时间</th>
+                    <th width="70">总计价格</th>
+                    <th width="70">总计数量</th>
+                    <th width="70">状态</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $info as $row}
+                <tr class="text-c">
+                    <td>{$row['order_no']}</td>
+                    <td>{$row['snap_name']}</td>
+                    <td>{$row['user_id']}</td>
+                    <td>{$row['create_time']}</td>
+                    <td>{$row['total_price']}</td>
+                    <td>{$row['total_count']}</td>
+                    <td class="td-status">
+                        {switch name="$row['status']" }
+                        {case value="1"}<span class="label label-success radius">未支付</span>{/case}
+                        {case value="2"}<span class="label label-success radius">已支付</span>{/case}
+                        {case value="3"}<span class="label label-success radius">已发货</span>{/case}
+                        {case value="4"}<span class="label radius">已支付,库存不足</span>{/case}
+                        {/switch}
+                    </td>
+                    <td class="td-manage">
+                        {switch name="$row['status']" }
+                        {case value="2"}<a title="发货" href="javascript:;" onclick="send(this,'{$row[\'id\']}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe603;</i></a>{/case}
+                        {/switch}
+                        <a title="查看收件信息" href="javascript:;" onclick="see('{$row[\'id\']}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe725;</i></a>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+</section>
+
+<script type="text/javascript">
+    $(function(){
+        $('.table-sort').dataTable({
+            "bStateSave": true,
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {"orderable":false,"aTargets":[0,6]}// 制定列不参与排序
+            ]
+        });
+    });
+
+
+    function send(obj,id){
+        layer.confirm('确认发货？', {
+                btn: ['确认','取消'],
+                shade: false,
+                closeBtn: 0
+            },
+            function(){
+                var url = "{:url('Product/deliver')}";
+                MyBase.noTipsAjax(url,{id:id},function () {
+                    $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发货</span>');
+                    layer.msg('已更改状态', {icon:6,time:1000});
+                    window.location.reload();
+                });
+            });
+    }
+
+    function see(id) {
+        var url = "{:url('Product/seeAddress')}";
+        MyBase.noTipsAjax(url,{id:id},function (resule) {
+            var html = "<div class='map-info'><span>" +
+                "收货地址:</span><span class='map-content'>" + resule.address+
+                "</span></div>";
+            html += '<div><img  src="'+resule.img+'" ></div>';
+            dialog({
+                title:'收货地址',
+                content:html
+            }).showModal();
+        });
+    }
+
+</script>

@@ -1,0 +1,140 @@
+{__NOLAYOUT__}
+{include file="public/head"}
+<div class="secondly">
+    <div class="search">
+        <img src="__STATIC__/index/image/logo.png" />
+        <div class="w-order-nav-new">
+            <ul class="nav-wrap">
+                <li>
+                    <div class="no"><span>1</span></div>
+                    <span class="text">确认订单</span>
+                </li>
+                <li class="to-line"></li>
+                <li class="current">
+                    <div class="no"><span>2</span></div>
+                    <span class="text">选择支付方式</span>
+                </li>
+                <li class="to-line "></li>
+                <li class="">
+                    <div class="no"><span>3</span></div>
+                    <span class="text">购买成功</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="order_infor_module">
+        <div class="order_details">
+            <table width="100%">
+                <tbody>
+                <tr>
+                    <td class="fl_left ">
+                        <ul class="order-list">
+                            <li>
+                                <span class="order-list-no">订单号: {$order['order_no']}</span>
+                                <span class="order-list-time">创建时间：{$order['create_time']}</span>
+                                <span class="order-list-name">{$order['snap_name']}</span>
+                                <span class="order-list-number">总数量：{$order['total_count']}</span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fl_left ">
+                        <ul class="order-list">
+                            <li>
+                                <span>{$order['snap_address']['province']}</span>
+                                <span>{$order['snap_address']['city']}</span>
+                                <span>{$order['snap_address']['country']}</span>
+                                <span>{$order['snap_address']['detail']}</span>
+                                <span class="order-list-person">{$order['snap_address']['name']}</span>
+                                <span>{$order['snap_address']['mobile']}</span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="fl_right price-right">
+                        <dl>
+                            <dt>应付金额：</dt>
+                            <dd class="money"><span>{$order['total_price']}元</span></dd>
+                        </dl>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h1 class="title">选择支付方式</h1>
+
+    <div class="pay">第三方账户支付</div>
+    <div class="paychoose">
+        <input type="radio" name="pay" value="wx" checked />微信模拟
+        <input type="radio" name="pay" value="alipay" />支付宝
+    </div>
+    <button id="payButton">立即支付</button>
+
+</div>
+
+<!--支付第三步-->
+<div class="hidden page">
+    <div class="search">
+        <img src="__STATIC__/index/image/logo.png" onclick="window.location.href='/index/index/index.html'"/>
+        <div class="w-order-nav-new">
+            <ul class="nav-wrap">
+                <li>
+                    <div class="no"><span>1</span></div>
+                    <span class="text">确认订单</span>
+                </li>
+                <li class="to-line "></li>
+                <li>
+                    <div class="no"><span>2</span></div>
+                    <span class="text">选择支付方式</span>
+                </li>
+                <li class="to-line "></li>
+                <li class="current">
+                    <div class="no"><span>3</span></div>
+                    <span class="text">购买成功</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="success">
+        <span class="success-font">恭喜，购买成功！</span>
+        <button class="findButton" onclick="window.location.href='/index/order/order.html'">查看订单</button>
+    </div>
+</div>
+<script type="application/javascript">
+    $(function () {
+       var status = "{$order['status']}";
+       if(status == 2){
+           $('.secondly').addClass('hidden');
+           $('.page').removeClass('hidden');
+       }
+    });
+
+    $('#payButton').on('click',function () {
+        var pay = $('input:radio:checked').val();
+        if(pay == 'wx'){
+            tips('请稍后正在模拟支付...',3);
+            setTimeout(function () {
+                MyBase.noTipsAjax("{:url('order/weichatPayVirtual')}",{},function (resule) {
+                    if(resule.pass == true){
+                        tips('已支付成功!');
+                        setTimeout(function () {
+                            $('.secondly').addClass('hidden');
+                            $('.page').removeClass('hidden');
+                        },2000);
+                    }else{
+                        tips(resule.msg,3);
+                    }
+                })
+            },3000);
+        }else{
+            window.location.href = "{:url('order/alipay')}";
+        }
+    });
+</script>
+</body>
+</html>

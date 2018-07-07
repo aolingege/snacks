@@ -1,0 +1,31 @@
+{__NOLAYOUT__}
+{include file="public/head"}
+<div class="page">
+    <div class="search">
+        <img src="__STATIC__/index/image/logo.png" onclick="window.location.href='/index/index/index.html'"/>
+        <div class="w-order-nav-new">
+            <ul class="nav-wrap">
+                <li>
+                    <div class="no"><span>1</span></div>
+                    <span class="text">确认订单</span>
+                </li>
+                <li class="to-line "></li>
+                <li>
+                    <div class="no"><span>2</span></div>
+                    <span class="text">选择支付方式</span>
+                </li>
+                <li class="to-line "></li>
+                <li class="current">
+                    <div class="no"><span>3</span></div>
+                    <span class="text">购买成功</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="success">
+        <span class="success-font" style="padding-left: 44px;">{$tip}</span>
+        <button class="findButton" onclick="window.location.href='/index/order/order.html'">查看订单</button>
+    </div>
+</div>
+</body>
+</html>

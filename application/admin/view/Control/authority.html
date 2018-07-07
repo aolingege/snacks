@@ -1,0 +1,66 @@
+<style>
+    .update{
+        margin-top: 0;
+    }
+    .box{
+        width: 80%;
+    }
+    .control{
+        font-size: 16px;
+        color: #666;
+    }
+</style>
+<nav class="breadcrumb update">
+    <i class="Hui-iconfont"></i>
+    <a href="{:url('groupcontrol')}" class="maincolor">部门管理</a> > 权限管理
+</nav>
+<article class="cl pd-10 box">
+    <form action="{:url('authPromo')}" method="post" class="form form-horizontal" id="form-admin-add">
+        <input type="text" name="id" value="{$id|default=''}" style="display: none">
+        {foreach $allRules as  $row}
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input type="checkbox" data-control="1" name="rule[]" value="{$row['id']}" data-id="{$row['id']}" >
+                    <span class="control">{$row['title']}</span>
+                    <hr>
+                    <?php if(!isset($row['action']))
+                                $row['action'] = [];
+                    ?>
+                    {foreach $row['action'] as $key => $vo}
+                    <input type="checkbox" data-belong ="{$row['id']}" name="rule[]" value="{$vo['id']}" data-id="{$vo['id']}">
+                    <span>{$vo['title']}</span>
+                    {/foreach}
+                </div>
+            </div>
+        {/foreach}
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="button" id="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var rules = '{$idRules}';
+        rules = JSON.parse(rules);
+        for(var i=0;i<rules.length;i++){
+            var input = $("input[data-id="+rules[i]+"]");
+            input.attr('checked',true);
+        }
+
+        $('#submit').on('click',function () {
+            var control = $('input[data-control="1"]');
+            for (var i = 0; i < control.length;i++){
+                if (!control.eq(i).is(':checked')){
+                    var id = control.eq(i).attr('value');
+                    $('input[data-belong="'+id+'"]').attr('checked',false);
+                }
+            }
+            MyBase.ajaxSubmit($('#form-admin-add'));
+        });
+    });
+</script>

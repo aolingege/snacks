@@ -1,0 +1,136 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+    .header{
+        width: 100%;
+        height: 100px;
+        background-color: #eee;
+    }
+    .content-box{
+        width: 980px;
+        margin: 40px auto;
+    }
+    .express{
+        height: 500px;
+        border-right: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+    }
+    .select-box{
+        width: 40%;
+        padding-top: 35px;
+        margin-left: 80px;
+    }
+    .group{
+        margin-bottom: 15px;
+    }
+    .express-info{
+        width: 80%;
+        margin: 35px auto;
+    }
+    .select-content{
+        padding: 8px 10px;
+        height: 260px;
+        overflow-y: scroll;
+        background-color: #faf9f9;
+    }
+    .tip{
+        display: block;
+        font-size: 17px;
+        margin-top: 17px;
+    }
+    .my-logo{
+        margin-left: 20px;
+        margin-top: 26px;
+    }
+    .my-title{
+        float: right;
+        right: 24px;
+        top: 34px;
+        position: absolute;
+        font-size: 23px;
+        color: #50aaf7;
+        font-weight: 600;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link href="__STATIC__/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <title>服务页面</title>
+</head>
+<body>
+<header class="header">
+    <img src="/static/index/image/logo.png" class="my-logo" onclick="window.location.href = '/index/index/index.html'">
+    <div class="my-title">生活服务站</div>
+</header>
+<main class="container-fluid">
+    <div class="content-box panel">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="{:url('service/service')}">查快递</a></li>
+            <li role="presentation"><a href="{:url('service/lottery')}">查彩票</a></li>
+            <li role="presentation"><a href="#" onclick="notOpenTips()">充话费</a></li>
+            <li role="presentation"><a href="#" onclick="notOpenTips()">电费</a></li>
+        </ul>
+        <div class="express">
+            <form class="select-box" method="post" action="{:url('service/service')}">
+                <div class="row group">
+                    <select name="com"  class="form-control" id="select">
+                        {foreach name="com" item="vo"}
+                        <option value="{$vo.no}">{$vo.com}</option>
+                        {/foreach}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <?php $id = isset($_POST['id'])? $_POST['id'] : "";?>
+                        <input type="text" class="form-control" name="id"  value="{$id}" placeholder="输入快递单号">
+                        <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">查询</button>
+                            </span>
+                    </div>
+                </div>
+            </form>
+            <div class="express-info">
+                {if condition="($flag == true)"}
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading">{$result['company']}</h4>
+                        <span>单号:{$result['no']}</span>
+                    </div>
+                </div>
+                <div class="select-content">
+                    <ul class="list-group">
+                        {foreach name="$result['list']" item="vo"}
+                        <li class="list-group-item"><span>{$vo['datetime']} </span> {$vo['remark']}</li>
+                        {/foreach}
+                    </ul>
+                </div>
+                {else /}
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading">快递查询</h4>
+                        <span>填写您要查询的 快递 和 快递单号 点查询键完成查询</span>
+                        <span class="text-danger tip">{$tips|default=''}</span>
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</main>
+<footer></footer>
+</body>
+</html>
+<script type="text/javascript" src="__STATIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/bootstrap/js/bootstrap.js"></script>
+<script>
+    var com = "{$comSelect}";
+    if(com){
+        $('#select').val(com);
+    }
+    //未开通提示
+    function notOpenTips() {
+        alert('尚未开通此功能，敬请期待。');
+    }
+</script>

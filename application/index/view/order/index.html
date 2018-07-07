@@ -1,0 +1,316 @@
+{__NOLAYOUT__}
+{include file="public/head"}
+
+<div class="address page">
+    <div class="newAddress">
+        <button class="addBtn" id="addBtn">添加/编辑 地址</button>
+    </div>
+    {eq name="address" value="0"}
+        <div class="no-address">
+        暂无收件地址，请添加。
+        </div>
+    {else/}
+        <div class="address-edit">
+            <p class="Addressee"><span>{$address['province']}</span><span>{$address['city']}</span> <span>{$address['name']}</span> 收</p>
+            <p class="receivAddress"><span>{$address['country']}</span>&nbsp;<span>{$address['mobile']}</span></p>
+            <p class="detail">{$address['detail']}</p>
+        </div>
+    {/eq}
+</div>
+<div class="firstly page">
+    <table class="table table-goods" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <th width="120">
+                 <span>
+                     <input type="checkbox" class="input_check" id="checkAll" checked><label for="checkAll">全选</label>
+                 </span>
+            </th>
+            <th class="first">商品</th>
+            <th width="120">单价</th>
+            <th width="240">数量</th>
+            <th width="140" class="last">操作</th>
+        </tr>
+        {foreach $order as $row}
+        <tr class="j-row">
+            <td>
+                 <span><input type="checkbox" class="input-row" checked/></span>
+            </td>
+            <td class="vtop">
+                <div class="title-area" title="{$row['summary']}">
+                    <div class="img-wrap">
+                        <a href="" target="_blank"><img src="{$row['main_img_url']}" class="img-view"></a>
+                    </div>
+                    <div class="title-wrap">
+                        <div class="title">
+                            <a href="" class="link"><span class="name">{$row['name']}</span></a>
+                        </div>
+                        <div class="attrs"></div>
+                    </div>
+                </div>
+            </td>
+            <td>￥<span class="font14">{$row['price']}</span></td>
+            <td class="j-cell">
+                <div class="buycount-ctrl">
+                    <a class="j-ctrl ctrl minus
+                    {if condition="($row['count'] < 2)"}
+                        disabled
+                    {/if}
+                    ">-</a>
+                    <input type="number" value="{$row['count']}" maxlength="10" min="1" class="priceText" data-uid="{$uid}" data-price="{$row['price']}" data-id="{$row['id']}" >
+                    <a class="ctrl j-ctrl plus">+</a>
+                </div>
+                <span class="err-wrap j-err-wrap"></span>
+            </td>
+            <td class="font14"><span class="j-dele">X</span></td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    <div class="final-price-area">应付总额：<span class="sum">￥<span class="price">0</span></span></div>
+
+    <div class="page-button-wrap">
+        <a href="javascript:void(0)" id="submitOrder" class="btn btn-primary">去支付</a>
+    </div>
+    <div style="width: 100%;min-width: 1200px;height: 5px;background: #dbdbdb;margin: 50px 0 20px;"></div>
+</div>
+<div class="container hidden">
+    <div class="content">
+        <img src="__STATIC__/index/image/404.jpg">
+        <div class="tip-404">哦豁,未发现你的美食！快去添加吧。</div>
+        <button class="findButton">发现美食</button>
+    </div>
+</div>
+
+<script type="text/javascript" src="__STATIC__/index/js/area.js"></script>
+<script>
+
+
+    $(function () {
+        $('#addBtn').on('click',function () {
+            var addStr =  '<form><div class="address-select">'+
+                '<label class="address-tip">省份地址：</label>'+
+                '<select id="s_province" name="s_province"></select>'+
+                '<select id="s_city" name="s_city" ></select>'+
+                '<select id="s_county" name="s_county"></select>'+
+                '</div>'+
+                '<div class="address-select">'+
+                '<label class="address-tip">详细地址：</label>'+
+                '<input type="text" name="address" class="phoneInput" placeholder="&nbsp;&nbsp;请填写详细地址" value="'+$('.detail').text()+'">'+
+                '</div>'+
+                '<div class="address-select">'+
+                '<label class="address-tip">收件人：</label>'+
+                '<input type="text" name="person" class="phoneInput" placeholder="&nbsp;&nbsp;请填写姓名" value="'+$('.Addressee span').eq(2).text()+'">'+
+                '</div>'+
+                '<div class="address-select">'+
+                '<label class="address-tip">电话：</label>'+
+                '<input type="text" name="phone" class="phoneInput" placeholder="&nbsp;&nbsp;请填写电话" value="'+$('.receivAddress span').eq(1).text()+'"></div></form>';
+            alert(addStr,'更新地址',function () {
+                updateAddress();
+            },true);
+            _init_area();
+            var province = $('.Addressee span').eq(0).text();
+            var city = $('.Addressee span').eq(1).text();
+            var country = $('.receivAddress span').eq(0).text();
+            $('option[value="'+province+'"]').attr("selected",true).trigger("change");
+            $('option[value="'+city+'"]').each(function (e) {
+                $('option[value="'+city+'"]').eq(e).attr("selected",true).trigger("change");
+            });
+            $('option[value="'+country+'"]').attr("selected",true).trigger("change");
+        });
+
+        reCalculation();
+    });
+
+
+    //更新地址信息
+    function updateAddress() {
+        if ($('#s_province').val() == '省份' || $('#s_city').val() == '地级市'
+            || $('input[name="address"]').val() == ''){
+            alert('请补充完整的地址信息');
+        }else if($('input[name="person"]').val() == ''){
+            alert('请填写收件人姓名');
+        }else if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test($('input[name="phone"]').val()))){
+            alert('电话格式错误');
+        }else{
+            var isUpdate = $('.address-edit').length;
+            if(isUpdate){
+                $('.Addressee span').eq(0).text($('#s_province').val());
+                $('.Addressee span').eq(1).text($('#s_city').val());
+                $('.Addressee span').eq(2).text($('input[name="person"]').val());
+                $('.receivAddress span').eq(0).text($('#s_county').val());
+                $('.receivAddress span').eq(1).text($('input[name="phone"]').val());
+                $('.detail').text($('input[name="address"]').val());
+            }else{
+                //不是更新操作
+                if($('#s_county').val() == '市、县级市'){
+                    var str = '<div class="address-edit">'+
+                        '<p class="Addressee"><span>'+$('#s_province').val()+'</span><span>'+$('#s_city').val()+
+                        '</span> <span>'+$('input[name="person"]').val()+'</span> 收</p><p class="receivAddress"><span>'+$('#s_country').val()+'</span><span>'+$('input[name="phone"]').val()+
+                        '</span></p><p class="detail">'+$('input[name="address"]').val()+'</p></div>';
+                }else{
+                    var str = '<div class="address-edit">'+
+                        '<p class="Addressee"><span>'+$('#s_province').val()+'</span><span>'+$('#s_city').val()+
+                        '</span> <span>'+$('input[name="person"]').val()+'</span> 收</p><p class="receivAddress"><span>'+$('input[name="phone"]').val()+
+                        '</span></p><p class="detail">'+$('input[name="address"]').val()+'</p></div>';
+                }
+                $('.no-address').remove();
+                $('.address').append(str);
+            }
+            //将信息存放在服务器上
+            var data = {
+                name:$('input[name="person"]').val(),
+                mobile:$('input[name="phone"]').val(),
+                province:$('#s_province').val(),
+                city:$('#s_city').val(),
+                country:$('#s_county').val(),
+                detail:$('input[name="address"]').val()
+            };
+            MyBase.noTipsAjax("{:url('order/saveAddress')}",data);
+        }
+    }
+
+    $('#submitOrder').on('click',function () {
+        var checkbox = $('.input-row');
+        var input = $('.priceText');
+        var cart = new Array();
+        for(var i=0;i<checkbox.length;i++){
+            if(checkbox.eq(i).is(":checked")){
+                var row = new Array();
+                row.push(parseFloat(input.eq(i).val()));
+                row.push(parseFloat(input.eq(i).data('id')));
+                row.push(parseFloat(input.eq(i).data('uid')));
+                cart.push(row);
+            }
+        }
+        var json = JSON.stringify(cart);
+        MyBase.noTipsAjax("{:url('order/place')}",{json:json},function (result) {
+            if(result.status == 0){
+                tips('对不起小主商品已售空...',3);
+            }else{
+                tips('已经生成订单，订单号：'+result.order_no,2);
+                setTimeout(function () {
+                    //打开订单页面
+                    orderPage(result);
+                },2100);
+            }
+        },function (result) {
+            if(result){
+                if(result.status == 404){
+                    tips('小主,你还没填写收货地址',3);
+                }else
+                    tips('对不起小主服务器忙，稍后再试下吧...',3);
+            }else
+                tips('对不起小主服务器忙，稍后再试下吧...',3);
+        });
+    });
+
+    $('#checkAll').change(function (all) {
+        var checkbox = $('.input-row');
+        var flag = $(all.target).is(":checked");
+        checkbox.each(function (e) {
+            checkbox[e].checked = flag;
+        });
+        reCalculation();
+    });
+
+    $('.input-row').change(function () {
+        reCalculation();
+    });
+
+    $('.j-dele').on('click',function (e) {
+        confirm('删除就不能恢复了，确定删除吗?','提示',
+            function () {
+                $(e.target).parents('.j-row').remove();
+                reCalculation();
+            },
+            function () {
+            })
+    });
+
+    //重新计算金额
+    function reCalculation() {
+        var checkbox = $('.input-row');
+        var input = $('.priceText');
+        if(input.length == 0){
+                 $('.container').removeClass('hidden');
+                 $('.page').addClass('hidden');
+        }
+        var sum = 0;
+        var cart = new Array();
+        for(var i=0;i<checkbox.length;i++){
+            if(checkbox.eq(i).is(":checked")){
+                sum += parseFloat(input.eq(i).val()) * parseFloat(input.eq(i).data('price'));
+                var row = new Array();
+                row['count'] = parseFloat(input.eq(i).val());
+                row['id'] = parseFloat(input.eq(i).data('id'));
+                row['uid'] = parseFloat(input.eq(i).data('uid'));
+                cart.push(row);
+            }
+        }
+        $('.price').text(sum.toFixed(2));
+    }
+
+    //提交订单信息
+    function orderPage(order) {
+        console.log(JSON.stringify(order));
+        MyBase.commonAjax("{:url('order/saveOrderToPay')}",
+            {json:JSON.stringify(order)},'POST');
+    }
+
+
+    /**用户手动收入
+     *
+     */
+    $(".buycount-ctrl input").keyup(function(e){
+        var input = $(e.target);
+        var num = input.val();
+        if(num >1){
+            input.prev().removeClass('disabled');
+        }else{
+            input.val(1);
+            input.prev().addClass('disabled');
+        }
+        reCalculation()
+    });
+
+    /**减号
+     *
+     */
+    $(".minus").on('click',function(e){
+        var input = $(e.target).next();
+        var num = input.val();
+        if(num > 1){
+            $(e.target).removeClass('disabled');
+            num--;
+            if(num == 1)
+                $(e.target).addClass('disabled');
+            input.val(num);
+        }
+        else {
+            $(e.target).addClass('disabled');
+        }
+        reCalculation()
+    });
+
+
+    /**加号
+     *
+     */
+    $(".plus").on('click',function(e){
+        var input = $(e.target).prev();
+        var num = input.val();
+        num++;
+        if(num > 1){
+            $(e.target).prev().prev().removeClass('disabled');
+        }
+        input.val(num);
+        reCalculation()
+    });
+
+    $('.findButton').on('click',function () {
+        window.location.href = "{:url('index/index')}";
+    });
+</script>
+</body>
+</html>

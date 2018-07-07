@@ -1,0 +1,38 @@
+<div class="search">
+    <img src="__STATIC__/index/image/logo.png" />
+</div>
+
+<div class="nav-bar-header">
+    <div class="nav-inner">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <span class="item">全部分类</span>
+                <div class="left-menu">
+                    {foreach $category as $key=>$vo }
+                    <div class="level-item">
+                        <div class="first-level">
+                            <dl>
+                                <dt class="title"><a href="/index/category/index/id/{$vo['id']}" target="_top">{$vo['name']}</a></dt>
+                            </dl>
+                        </div>
+                        <div class="second-level">
+                            <div class="section">
+                                <div class="section-item clearfix no-top-border">
+                                    <h3>品种分类</h3>
+                                    <ul>
+                                        {foreach $vo['data'] as $row }
+                                        <li><a class="hot" href="{:url('product/index', ['id' => $row['id']])}">{$row['name']}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </li>
+            <li class="nav-item"><a class="item first active" href="{:url('index/index')}">首页</a></li>
+            <li class="nav-item"><a class="item" href="{:url('admin/login/index')}" >商家</a></li>
+        </ul>
+    </div>
+</div>

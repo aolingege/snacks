@@ -1,0 +1,242 @@
+<div class="p-detail">
+    <div class="p-bread-crumb">
+        <div class="w-bread-crumb">
+            <ul class="crumb-list">
+                <li class="crumb"><a>{$product['category']}</a><span class="ico-gt">&gt;</span></li>
+                <li class="crumb crumb-last"><a>{$product['name']}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="static-hook-real static-hook-id-5"></div>
+    <div class="p-item-info">
+        <div class="w-item-info">
+            <h2>{$product['name']}</h2>
+            <div class="item-title">
+                <span class="text-main">{$product['summary']}</span>
+            </div>
+            <div class="ii-images static-hook-real static-hook-id-6">
+                <div class="w-item-images">
+                    <div class="images-board">
+                        <div class="item-status ">
+                            <span class="ico-status ico-jingxuan"></span>
+                        </div>
+                        <img src="{$product['main_img_url']}" class="item-img-large" />
+                    </div>
+                    <ul class="images-list clearfix">
+                        <li class="images images-last">
+                            <img src="{$product['main_img_url']}" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ii-intro">
+                <div class="w-item-intro">
+                    <div class="price-area-wrap static-hook-real static-hook-id-8">
+                        <div class="price-area has-promotion-icon">
+                            <div class="pic-price-area">
+                                <span class="unit">¥</span>
+                                <span class="priceNum">{$product['price']}</span>
+                            </div>
+
+                            <div class="market-price-area">
+                                <div class="price">¥{$product['price']+4}</div>
+                                <div class="name">价值</div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="static-hook-real static-hook-id-9">
+                        <a class="link jingxuan-box">
+                            <div class="box">
+                                <div class="jx-update" id="j-jxUpdateTime">
+                                    <span>美食抢购状态</span>
+                                    {if condition="($product['stock'] > 0)"}
+                                    <span class="jx-timerbox">有货,抢购中...</span>
+                                    {else /}
+                                    <span class="jx-timerbox">缺货,抢购结束下次再来吧</span>
+                                    {/if}
+
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <ul class="ugc-strategy-area static-hook-real static-hook-id-10">
+                        <li class="item-bought">
+                            <div class="sl-wrap">
+                                <div class="sl-wrap-cnt">
+                                    <div class="item-bought-num">库存数量：<span class="intro-strong">{$product['stock']}</span></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="buy-panel-wrap">
+                        <div class="buy-panel">
+                            <div class="validdate-buycount-area static-hook-real static-hook-id-11">
+                                <div class="item-buycount-row j-item-buycount-row">
+                                    <div class="name">数&nbsp;&nbsp;&nbsp;量</div>
+                                    <div class="buycount-ctrl">
+                                        <a href="javascript:;" class="j-ctrl ctrl minus disabled"><span class="horizontal"></span></a>
+                                        <input type="text" value="1" maxlength="10" autocomplete="off" data-id="{$product['id']}">
+                                        <a href="javascript:;" class="ctrl j-ctrl plus "><span class="horizontal"></span><span class="vertical"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-buy-area">
+                                <div style="float:left" class="static-hook-real static-hook-id-12">
+                                    <div  class="btn-buy btn-buy-qrnew j-btn-buy btn-hit" id="addCart">加入购物车</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-item-info-more">
+        <div class="iim-wrapper">
+            <div class="spec-nav ">
+                <div class="nav-bar"></div>
+                <div class="w-spec-nav" style="position: static; top: auto; z-index: auto;">
+                    <ul class="sn-list">
+                        <li class="spec-nav-current">
+                            <i></i><a><span>商品详情</span></a>
+                        </li>
+                        <li class="">
+                            <i></i><a><span>产品参数</span></a>
+                        </li>
+                        <li class="">
+                            <i></i><a><span>售后保障</span></a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+            <ul class="j-info-all">
+                <li class="tab">
+                    <div class="ifram">
+                        {foreach $param['img'] as $row}
+                            <img src="{$row}" alt="">
+                        {/foreach}
+                    </div>
+                </li>
+                <li class="tab">
+                    <div class="ifram">
+                        {foreach $param['property'] as $row}
+                            <div class="param-box">
+                                <span class="param-title">{$row['name']}：</span>
+                                <span>{$row['detail']}</span>
+                            </div>
+                        {/foreach}
+                    </div>
+                </li>
+                <li class="tab">
+                    <div class="ifram">
+                        <span class="param-box">购物须知：七天无理由免费退货。</span>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="footer-content">
+    <div class="copyright-info">
+        <div class="site-info">
+
+        </div>
+        <div class="icons">
+
+        </div>
+        <div style="width:200px;margin:0 auto; padding:20px 0;">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    //校验正整数
+    function isNaN(number){
+        var reg = /^[1-9]\d*$/;
+        return reg.test(number);
+    }
+
+    function inputChange(num){
+        if(!isNaN(num)){
+            $(".buycount-ctrl input").val("1");
+        }
+        else{
+            $(".buycount-ctrl input").val(num);
+            if(num == 1){
+                $(".buycount-ctrl a").eq(0).addClass("disabled");
+            }
+            else{
+                $(".buycount-ctrl a").eq(0).removeClass("disabled");
+            }
+        }
+    }
+
+    $(".buycount-ctrl input").keyup(function(){
+        var num = $(".buycount-ctrl input").val();
+        inputChange(num);
+    });
+    $(".minus").click(function(){
+        var num = $(".buycount-ctrl input").val();
+        num--;
+        inputChange(num);
+    });
+    $(".plus").click(function(){
+        var num = $(".buycount-ctrl input").val();
+        num++;
+        inputChange(num);
+    });
+
+
+    $(".sn-list li").click(function(){
+        var index = $(".sn-list li").index(this);
+        $(".sn-list li").removeClass("spec-nav-current");
+        $(".j-info-all .tab").css({display: "none"});
+        $(this).addClass("spec-nav-current");
+        $(".j-info-all .tab").eq(index).css({display: "block"});
+    });
+
+
+    $(".branch").mouseenter(function(){
+        $(".branch").removeClass("branch-open").addClass("branch-close");
+        $(this).removeClass("branch-close").addClass("branch-open");
+    });
+
+    $('#addCart').click(function () {
+        var id = $(".buycount-ctrl input").data('id');
+        var num = $(".buycount-ctrl input").val();
+        var url = "{:url('cart/index')}";
+        var loginUrl = "{:url('user/login')}";
+        var saveUrl = "{:url('cart/SaveCartToSession')}";
+        //判断是否登录
+        {if condition="($login)"}
+        var isLogin = true;
+        {else /}
+            var isLogin = false;
+        {/if}
+                if(isLogin){
+                    var param = {id:id,count:num};
+                    MyBase.commonAjax(saveUrl,param,'POST');
+                    setTimeout(function () {
+                        window.location.href = url;
+                    },300);
+                }else{
+                    confirm('需要登录才能添加到购物车是否登录?','提示',
+                        //愿意登录
+                        function () {
+                            var param = {id:id,count:num};
+                            MyBase.commonAjax(saveUrl,param,'POST');
+                            window.location.href = loginUrl;
+                        },
+                        function () {
+                        })
+                }
+    });
+</script>
+</body>
+</html>

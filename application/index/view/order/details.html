@@ -1,0 +1,97 @@
+{__NOLAYOUT__}
+{include file="public/head"}
+<div class="secondly">
+    <div class="search">
+        <img src="__STATIC__/index/image/logo.png" />
+    </div>
+
+    <div class="order_infor_module">
+        <div class="order_details">
+            <table width="100%">
+                <tbody>
+                <tr>
+                    <td class="fl_left ">
+                        <ul class="order-list">
+                            <li>
+                                <span class="order-list-no">订单号: {$order['order_no']}</span>
+                                <span class="order-list-time">创建时间：{$order['create_time']}</span>
+                                <span class="order-list-name">{$order['snap_name']}</span>
+                                <span class="order-list-number">总数量：{$order['total_count']}</span>
+                                <span class="order-list-number" style="margin-left: 10px">总价格：￥{$order['total_price']}</span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fl_left ">
+                        <ul class="order-list">
+                            <li>
+                                <span>{$order['snap_address']['province']}</span>
+                                <span>{$order['snap_address']['city']}</span>
+                                <span>{$order['snap_address']['country']}</span>
+                                <span>{$order['snap_address']['detail']}</span>
+                                <span class="order-list-person">{$order['snap_address']['name']}</span>
+                                <span>{$order['snap_address']['mobile']}</span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="fl_right price-right">
+                        <dl>
+                            <dt>订单状态：</dt>
+                            <dd class="money">
+                                <span>
+                                    {switch name="$order['status']" }
+                                        {case value="1"}未付款{/case}
+                                        {case value="2"}待发货{/case}
+                                        {case value="3"}已发货{/case}
+                                        {case value="4"}已支付(缺货){/case}
+                                    {/switch}
+                                </span>
+                            </dd>
+                        </dl>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h1 class="title">商品信息</h1>
+
+    <table class="table table-goods" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <th class="first">商品</th>
+            <th width="120">单价</th>
+            <th width="240">数量</th>
+            <th width="240">总价</th>
+        </tr>
+        {foreach $order['snap_items'] as $row}
+        <tr class="j-row">
+            <td class="vtop">
+                <div class="title-area">
+                    <div class="img-wrap">
+                        <a href="{:url('product/index', ['id' => $row['id']])}" target="_blank"><img src="{$row['main_img_url']}" class="img-view"></a>
+                    </div>
+                    <div class="title-wrap">
+                        <div class="title">
+                            <a href="{:url('product/index', ['id' => $row['id']])}" class="link"><span class="name">{$row['name']}</span></a>
+                        </div>
+                        <div class="attrs"></div>
+                    </div>
+                </div>
+            </td>
+            <td>￥<span class="font14">{$row['price']}</span></td>
+            <td>{$row['counts']}</td>
+            <td class="j-cell"><div class="buycount-ctrl">￥{$row['totalPrice']}</div></td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+
+</div>
+
+</body>
+</html>

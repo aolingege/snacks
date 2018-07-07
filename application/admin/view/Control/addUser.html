@@ -1,0 +1,80 @@
+<style>
+    .update{
+        margin-top: 0;
+    }
+    .box{
+        width: 80%;
+    }
+</style>
+<nav class="breadcrumb update">
+    <i class="Hui-iconfont"></i>
+    <a href="{:url('usermanage')}" class="maincolor">用户管理</a> > 添加用户
+</nav>
+<article class="cl pd-10 box">
+    <form action="{:url('addUser')}" method="post" class="form form-horizontal" id="form-admin-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>账号：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text"   placeholder="填写账号"  name="account">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text"   placeholder="填写密码" id="passwordOne" name="passwordOne">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>重复密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text"   placeholder="填写账号" id="passwordTwo" name="passwordTwo">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>昵称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text"   placeholder="填写昵称"  name="title">
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#form-admin-add").validate({
+            rules:{
+                account:{
+                    required:true,
+                    minlength:4,
+                    maxlength:16
+                },
+                passwordOne:{
+                    required:true,
+                    minlength:6,
+                    maxlength:16
+                },
+                passwordTwo:{
+                    required:true,
+                    minlength:6,
+                    maxlength:16,
+                    equalTo: "#passwordOne"
+                },
+                title:{
+                    required: true,
+                    rangelength:[1,30],
+                }
+            },
+            success:"valid",
+            submitHandler:function(form){
+                MyBase.ajaxSubmit(form)
+            }
+        });
+    });
+</script>

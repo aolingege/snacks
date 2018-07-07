@@ -1,0 +1,66 @@
+<style>
+    .update{
+        margin-top: 0;
+    }
+    .box{
+        width: 80%;
+    }
+</style>
+<nav class="breadcrumb update">
+    <i class="Hui-iconfont"></i>
+    <a href="{:url('groupcontrol')}" class="maincolor">部门管理</a> > {$title}
+</nav>
+<article class="cl pd-10 box">
+    <form action="{:url('updateGroup')}" method="post" class="form form-horizontal" id="form-admin-add">
+        <input type="text" name="id" value="{$data['id']|default=''}" style="display: none">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>部门名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text"  value="{$data['title']|default=''}" placeholder="填写名称"  name="title">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">状态：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+				<select class="select" name="status" size="1" id="status">
+					<option value="1">正常</option>
+					<option value="0">禁用</option>
+				</select>
+			</div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var status = "{$data['status']|default=''}";
+
+        $('#status').val(status);
+
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-admin-add").validate({
+            rules:{
+                title:{
+                    required: true,
+                    rangelength:[1,30],
+                }
+            },
+            success:"valid",
+            submitHandler:function(form){
+                MyBase.ajaxSubmit(form)
+            }
+        });
+    });
+</script>

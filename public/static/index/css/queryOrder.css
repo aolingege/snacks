@@ -1,0 +1,55 @@
+.firstly{
+    margin-top: 20px;
+}
+.table{
+    vertical-align: middle;
+    margin: 0 auto;
+    width: 980px;
+    text-align: center;
+}
+.table tr th{
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    border-left: 1px solid #fff;
+    font-weight: 700;
+    font-size: 15px;
+    font-family: Tohoma,"Microsoft Yahei";
+    height: 44px;
+    background: #FAFAFA;
+    color: #666;
+}
+.title-area{
+    display:flex;
+    margin: 15px;
+}
+.img-wrap{
+}
+.title-wrap{
+    margin: auto 20px;
+    font-size:14px;
+}
+.title{
+}
+.price{
+    color: #FF668F;
+}
+.link{
+    color: #666;
+}
+.link:hover{
+    color:#FF6282;
+}
+
+.to-pay{
+    color: #fff;
+    width: 78px;
+    height: 24px;
+    display: inline-block;
+    background-color: #fe8a4b;
+    border-radius: 5%;
+    line-height: 22px;
+    font-family: Microsoft YaHei;
+}
+.to-pay:hover{
+     color: #fff;
+}

@@ -1,0 +1,130 @@
+<style>
+    .update{
+        margin-top: 0;
+    }
+    .box{
+        width: 80%;
+    }
+    .main-img{
+        width: 100px;
+        height: 100px;
+        display: none;
+    }
+</style>
+<nav class="breadcrumb update">
+    <i class="Hui-iconfont"></i>
+    <a href="{:url('product')}" class="maincolor">商品管理</a> > {$title}
+</nav>
+<article class="cl pd-10 box">
+    <form action="{:url('addproduct')}" method="post" class="form form-horizontal" id="form-admin-add">
+        <input type="text"  name="id" value="{$data['id']|default=''}" style="display: none">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text"   placeholder="名称"  name="name" value="{$data['name']|default=''}">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>价格：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" placeholder="价格" min="0.01" value="{$data['price']|default=''}" name="price">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>库存：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" min="1" max="999"  placeholder="填写数量"  name="stock" value="{$data['stock']|default=''}">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>分类：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <select class="select" name="category_id" size="1" id="category">
+                    {foreach $category as $row}
+                        <option value="{$row['id']}">{$row['name']}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>上传主图：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input id="file_upload"  type="file" multiple="true" >
+                <img id="mainImg" class="main-img" >
+                <input  name="main_img_url" type="hidden" id="main_img_url" >
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">简短描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text"   placeholder="请简短描述下商品吧"  name="summary" value="{$data['summary']|default=''}">
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/uploadify/jquery.uploadify.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var img = "{$data['main_img_url']|default=''}";
+        var category = "{$data['category_id']|default=''}";
+
+        if(img != ''){
+            $("#mainImg").attr("src", img);
+            $("#main_img_url").attr("value", img);
+            $("#mainImg").show();
+        }
+        if(category != ''){
+            $('#category').val(category);
+        }
+
+        $("#file_upload").uploadify({
+            'swf'             : '__STATIC__/lib/uploadify/uploadify.swf',
+            'uploader'        : "{:url('ajaxUploadProduct')}",
+            'buttonText'      : '图片上传',
+            'fileTypeDesc'    : 'Image files',
+            'fileObjName'     : 'file',
+            'fileTypeExts'    : '*.gif; *.jpg; *.png',
+            'onUploadSuccess' : function(file, data, response) {
+                if(response) {
+                    var obj = JSON.parse(data);
+                    $("#mainImg").attr("src", obj.path);
+                    $("#main_img_url").attr("value", obj.path);
+                    $("#mainImg").show();
+                }
+            }
+        });
+        $("#form-admin-add").validate({
+            rules:{
+                name:{
+                    required:true,
+                    minlength:2,
+                    maxlength:16
+                },
+                price:{
+                    required:true,
+                },
+                stock:{
+                    required:true,
+                },
+                category_id:{
+                    required: true,
+                },
+                summary:{
+                    required: true,
+                }
+            },
+            success:"valid",
+            submitHandler:function(form){
+                MyBase.ajaxSubmit(form)
+            }
+        });
+    });
+</script>

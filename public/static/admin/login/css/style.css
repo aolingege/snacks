@@ -1,0 +1,86 @@
+@charset "utf-8";
+
+.login-header{
+    background-color: #66b2f7;
+    height: 14rem;
+}
+
+.loginWraper{
+
+}
+
+.loginBox{
+    width: 45%;
+    margin: 10% auto;
+}
+
+.login-footer{
+    margin-top: 4%;
+}
+
+.footer {
+    border-top: 1px solid #e8e8e8;
+    padding: 15px 0;
+    font-family: tahoma,Arial;
+    font-size: 12px;
+    color: #999;
+    line-height: 22px;
+    text-align: center;
+}
+
+.group{
+    margin: 15px 15px 22px;
+}
+
+.validate{
+}
+
+.validate input[type="text"]{
+    width: 100px !important;
+}
+.validate a{
+    margin-left: 10px;
+    line-height: 35px;
+}
+.validate input[type="submit"]{
+    width: 16.7rem;
+    position: relative;
+    left: 17%;
+}
+
+@media screen and (max-width: 1200px) {
+    .validate input[type="submit"]{
+        margin-top: 12px;
+        margin-left: 5px;
+        width: 18rem;
+    }
+}
+
+
+#replace{
+    cursor: pointer;
+}
+
+.validateImg{
+    position: absolute;
+    left: 0;
+    bottom: -85px;
+}
+
+.group label{
+    display: table-cell;
+    position: absolute;
+    bottom: -25px;
+}
+
+.regis-bis{
+    color: #fff;
+    font-size: 16px;
+    position: absolute;
+    right: 27px;
+    top: 20px;
+}
+.regis-bis:hover{
+    color: #fff;
+    text-decoration: none;
+}

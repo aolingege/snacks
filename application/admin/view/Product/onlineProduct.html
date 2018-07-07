@@ -1,0 +1,142 @@
+<style>
+    .recommend-box{
+        width: 430px;
+        height: 340px;
+    }
+    .recommend-select{
+        width: 80%;
+        margin: 0 auto;
+    }
+    .myselect{
+        height: 35px;
+    }
+    .recomm-contend{
+        width: 90%;
+        margin-top: 35px;
+    }
+    .img{
+        width: 300px;
+        height: 200px;
+        margin-left: 60px;
+    }
+    .recom-input{
+        margin-left: 170px;
+        margin-top: 20px;
+    }
+</style>
+<nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="{:url($current)}" class="maincolor">商品管理</a>
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="Hui-article">
+    <!--内容区域-->
+    <article class="cl pd-20">
+        <div class="cl pd-5 bg-1 bk-gray mt-10">
+			<span class="l">
+                <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6b5;</i> 批量清空库存</a>
+			</span>
+            <span class="r">共有数据：<strong>{:count($product)}</strong> 条</span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort">
+                <thead>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="80">名称</th>
+                    <th width="70">单价</th>
+                    <th width="70">库存</th>
+                    <th width="70">分类</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $product as $row}
+                <tr class="text-c">
+                    <td><input type="checkbox" class="checkbox-id" data-id="{$row['id']}"></td>
+                    <td>{$row['name']}</td>
+                    <td>{$row['price']}</td>
+                    <td>{$row['stock']}</td>
+                    <td>{$row['category']}</td>
+                    <td class="td-manage">
+                        <a title="清空库存" href="javascript:;" onclick="action_clear(this,'{$row[\'id\']}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6b5;</i></a>
+                        <a title="删除产品" href="javascript:;" onclick="action_del(this,'{$row[\'id\']}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe66b;</i></a>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+</section>
+
+<script type="text/javascript">
+    $(function(){
+        $('.table-sort').dataTable({
+            "bStateSave": true,
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {"orderable":false,"aTargets":[0,5]}// 制定列不参与排序
+            ]
+        });
+    });
+
+    /**删除功能
+     *
+     */
+    function action_del(obj,id){
+        layer.confirm('确认要删除产品吗？',function(){
+            var url = "{:url('product/deleteOnlineProduct')}";
+            MyBase.noTipsAjax(url,{id:id},function (result) {
+                if (result.status == '1'){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                }
+            },function () {
+                layer.msg('删除失败!',{time:2000});
+            });
+        });
+    }
+
+
+    //批量清内存
+    function datadel(){
+        var check = $('.checkbox-id:checked');
+        if(check.length > 0){
+            layer.confirm('确认清空选中库存？',function(){
+                var url = "{:url('product/clearMultOnlineProduct')}";
+                var id = [];
+                for(var i=0;i<check.length;i++){
+                    id.push(check.eq(i).data('id'));
+                }
+                MyBase.noTipsAjax(url,{id:id},function (result) {
+                    if (result.status == '1'){
+                        for (var i=0;i<check.length;i++){
+                            check.eq(i).parents("tr").children().eq(3).html(0);
+                        }
+                        layer.msg('已清空!',{icon:1,time:1000});
+                    }
+                },function () {
+                    layer.msg('清空失败!',{time:2000});
+                });
+            });
+        }
+    }
+
+
+
+    function action_clear(obj,id) {
+        layer.confirm('确认清空选中库存？',function(){
+            var url = "{:url('product/clearOnlineProduct')}";
+            MyBase.noTipsAjax(url,{id:id},function (result) {
+                if (result.status == '1'){
+                    $(obj).parents("tr").children().eq(3).html(0);
+                    layer.msg('已清空!',{icon:1,time:1000});
+                }
+            },function () {
+                layer.msg('删除失败!',{time:2000});
+            });
+        });
+    }
+    
+    
+
+</script>
